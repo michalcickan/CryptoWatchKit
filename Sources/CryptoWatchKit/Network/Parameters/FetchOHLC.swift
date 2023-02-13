@@ -17,11 +17,11 @@ public enum OHLCPeriod: String, Encodable, Hashable, CodingKey {
 }
 
 public struct FetchOHLC: Encodable {
-    let after: Int?
-    let before: Int?
+    let after: TimeInterval?
+    let before: TimeInterval?
     let periods: [OHLCPeriod]?
     
-    public init(after: Int? = nil, before: Int? = nil, periods: [OHLCPeriod]? = nil) {
+    public init(after: TimeInterval? = nil, before: TimeInterval? = nil, periods: [OHLCPeriod]? = nil) {
         self.after = after
         self.before = before
         self.periods = periods
