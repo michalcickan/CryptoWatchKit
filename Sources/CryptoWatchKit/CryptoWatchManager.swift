@@ -16,4 +16,15 @@ public extension CryptoWatchManager {
             type: ResultResponse<[Exchange]>.self
         ).result
     }
+    
+    func fetchOHLC(exchangeSymbol: String, pair: String, params: FetchOHLC? = nil) async throws -> Dictionary<OHLCPeriod, [OHLC]> {
+        return try await session.get(
+            request: CryptoWatchRequest(endpoint: .ohlc(exchangeSymbol: exchangeSymbol, pair: pair), parameters: params),
+            type: ResultResponse<DictionaryResult<OHLCPeriod, [OHLC]>>.self
+        ).result.values
+    }
+    
+    func fetchPairs(params: FetchPairs? = nil) async throws -> GenericWithCursor<[Pair]> {
+        return try await session.get(request: CryptoWatchRequest(endpoint: .pairs, parameters: params))
+    }
 }

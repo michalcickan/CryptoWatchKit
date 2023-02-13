@@ -20,8 +20,18 @@ private extension URLSession {
     }
     
     func performRequest<T: Decodable>(_ request: CryptoWatchRequest, method: Method) async throws -> T {
-        var urlRequest = URLRequest(url: request.url)
+        var queryParameters = request.urlComponents
+        if method == .get {
+            queryParameters.queryItems = request.parameters?.queryItems
+        }
+        guard let url = queryParameters.url else {
+            throw CryptoWatchException.invalidURL
+        }
+        var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = method.rawValue
+        if method != .get, let parameters = request.parameters {
+            urlRequest.httpBody = try JSONEncoder().encode(parameters)
+        }
         let result: (Data, URLResponse)
         if #available(iOS 15.0, *) {
             result = try await data(for: urlRequest)
