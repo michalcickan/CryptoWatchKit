@@ -42,4 +42,15 @@ final class CryptoWatchKitTests: XCTestCase {
         XCTAssertNotNil(ohlc[.day])
         XCTAssertNil(ohlc[.fiveMinutes])
     }
+    
+    func testFetchOHLCPeriodsWithAfter() async throws {
+        // in app, pairs and exchanges should be cached since it is not changed
+//        let pair = try await CryptoWatchManager.shared.fetchPairs(params: FetchPairs(limit: 1))
+        let response = try await CryptoWatchManager.shared.fetchExchanges()
+        let ohlc = try await CryptoWatchManager.shared.fetchOHLC(exchangeSymbol: response[0].symbol, pair: "btceur", params: FetchOHLC(before: Date().timeIntervalSince1970, periods: [.fourHours, .day]))
+        XCTAssertEqual(ohlc.values.count, 2)
+        XCTAssertNotNil(ohlc[.fourHours])
+        XCTAssertNotNil(ohlc[.day])
+        XCTAssertNil(ohlc[.fiveMinutes])
+    }
 }
